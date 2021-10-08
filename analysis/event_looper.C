@@ -446,8 +446,6 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
         cout << "loaded flavors for iterativefit" << endl;
     }
 
-
-
     auto outFileName = outputdir+"/"+chainTitle+"_"+TString(std::to_string(year).c_str())+"_hists.root";
     std::cout << "Will write histograms to " << outFileName.Data() << std::endl;
 
@@ -457,18 +455,32 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     std::string tmp_yr_str = std::to_string(year);
     BDTBabyMaker bdt_fakes_baby;
     BDTBabyMaker bdt_flips_baby;
-    BDTBabyMaker bdt_MC_baby;
+    BDTBabyMaker bdt_MC_baby_training;
+    BDTBabyMaker bdt_MC_baby_testing;
     std::string BDT_base_dir = "./helpers/BDT/babies/tmp/";
     if (make_BDT_fakes_babies){
-        bdt_fakes_baby.Initialize(Form("%s/%s/data_driven/%s_fakes.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh));
-        cout << Form("%s/%s/data_driven/%s_fakes.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh) << endl;
+        char* output_baby_name = Form("%s/%s/data_driven/%s_fakes.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        filesystem::create_directory(output_baby_name);
+        bdt_fakes_baby.Initialize(output_baby_name);
+        if (debugPrints) {
+            cout << output_baby_name << endl;
+        }
     }
     if (make_BDT_flips_babies){
-        bdt_flips_baby.Initialize(Form("%s/%s/data_driven/%s_flips.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh));
-        cout << Form("%s/%s/data_driven/%s_flips.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh) << endl;
+        char* output_baby_name = Form("%s/%s/data_driven/%s_flips.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        filesystem::create_directory(output_baby_name);
+        bdt_flips_baby.Initialize(output_baby_name);
+        if (debugPrints) {
+            cout << output_baby_name << endl;
+        }
     }
     if (make_BDT_MC_babies){
-        bdt_MC_baby.Initialize(Form("%s/%s/MC/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh));
+        char* output_training_baby_name = Form("%s/%s/MC/training/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        char* output_testing_baby_name = Form("%s/%s/MC/testing/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        filesystem::create_directory(output_training_baby_name);
+        filesystem::create_directory(output_testing_baby_name);
+        bdt_MC_baby_training.Initialize(output_training_baby_name);
+        bdt_MC_baby_testing.Initialize(output_testing_baby_name);
     }
 
     HistContainer hists;
@@ -1212,12 +1224,28 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                                 ((category==3) && (chainTitle=="rares"   )) ||
                                 ((chainTitle=="signal_tch"))                ||
                                 ((chainTitle=="signal_tuh"))                );
+            bool is_MC_fakes_flips = (chainTitle=="fakes_mc") || (chainTitle=="flips_mc");
+            bool is_sig_rares = (chainTitle=="rares"   ) || (chainTitle=="signal_tch") || (chainTitle=="signal_tuh"); 
             bool fill_BDT_data_driven = (abs(crWeight) > 0.0);
             if (fill_BDT_MC) {
                 if (((best_hyp_type == 4) || (((best_hyp.size() > 2) && (best_hyp_type==2)))) && make_BDT_MC_babies) {
                     std::map<std::string, Float_t> BDT_params = hct_booster.calculate_features(good_jets, good_bjets, best_hyp);
-                    //std::cout << variationalWeights["LepSF_up"] << std::endl;
-                    bdt_MC_baby.set_features(BDT_params,weight, variationalWeights);
+                    if (is_MC_fakes_flips) {//split fakes/flips into 2 datasets for training/testing
+                        if (nt.event() % 2 == 0) {
+                            bdt_MC_baby_training.set_features(BDT_params, weight*2, variationalWeights);
+                        }
+                        else if (nt.event() % 2 == 1) {
+                            bdt_MC_baby_testing.set_features(BDT_params, weight*2, variationalWeights);
+                        }
+                    }
+                    if (is_sig_rares) { //split signal and rares into 3 sections, training, testing, and evaluation of limits
+                        if (nt.event() % 3 == 0) {
+                            bdt_MC_baby_training.set_features(BDT_params, weight*3, variationalWeights);
+                        }
+                        else if (nt.event() % 3 == 1) {
+                            bdt_MC_baby_testing.set_features(BDT_params, weight*3, variationalWeights);
+                        }
+                    }
                 }
             }
             else if (fill_BDT_data_driven) {
@@ -1239,7 +1267,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
         hut_booster.set_features(HUT_BDT_params);
         float HCT_BDT_score = float(hct_booster.get_score());
         float HUT_BDT_score = float(hut_booster.get_score());
-        if (true) {
+        if (debugPrints) {
             std::cout << "HCT BDT score: " << HCT_BDT_score << std::endl;
             std::cout << "HUT BDT score: " << HUT_BDT_score << std::endl;
         }
