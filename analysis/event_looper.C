@@ -455,12 +455,13 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     std::string tmp_yr_str = std::to_string(year);
     BDTBabyMaker bdt_fakes_baby;
     BDTBabyMaker bdt_flips_baby;
-    BDTBabyMaker bdt_MC_baby_training;
-    BDTBabyMaker bdt_MC_baby_testing;
-    std::string BDT_base_dir = "./helpers/BDT/babies/tmp/";
+    //BDTBabyMaker bdt_MC_baby_training;
+    //BDTBabyMaker bdt_MC_baby_testing;
+    BDTBabyMaker bdt_MC_baby;
+    std::string BDT_base_dir = "./helpers/BDT/babies/ctag/";
     if (make_BDT_fakes_babies){
         char* output_baby_name = Form("%s/%s/data_driven/%s_fakes.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
-        filesystem::create_directory(output_baby_name);
+        //std::experimenal::filesystem::create_directory(output_baby_name);
         bdt_fakes_baby.Initialize(output_baby_name);
         if (debugPrints) {
             cout << output_baby_name << endl;
@@ -468,19 +469,19 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     }
     if (make_BDT_flips_babies){
         char* output_baby_name = Form("%s/%s/data_driven/%s_flips.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
-        filesystem::create_directory(output_baby_name);
+        //std::experimental::filesystem::create_directory(output_baby_name);
         bdt_flips_baby.Initialize(output_baby_name);
         if (debugPrints) {
             cout << output_baby_name << endl;
         }
     }
     if (make_BDT_MC_babies){
-        char* output_training_baby_name = Form("%s/%s/MC/training/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
-        char* output_testing_baby_name = Form("%s/%s/MC/testing/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
-        filesystem::create_directory(output_training_baby_name);
-        filesystem::create_directory(output_testing_baby_name);
-        bdt_MC_baby_training.Initialize(output_training_baby_name);
-        bdt_MC_baby_testing.Initialize(output_testing_baby_name);
+        //char* output_training_baby_name = Form("%s/%s/MC/training/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        //char* output_testing_baby_name = Form("%s/%s/MC/testing/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        //bdt_MC_baby_training.Initialize(output_training_baby_name);
+        //bdt_MC_baby_testing.Initialize(output_testing_baby_name);
+        char* output_baby_name = Form("%s/%s/MC/%s.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
+        bdt_MC_baby.Initialize(output_baby_name);
     }
 
     HistContainer hists;
@@ -1230,22 +1231,23 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             if (fill_BDT_MC) {
                 if (((best_hyp_type == 4) || (((best_hyp.size() > 2) && (best_hyp_type==2)))) && make_BDT_MC_babies) {
                     std::map<std::string, Float_t> BDT_params = hct_booster.calculate_features(good_jets, good_bjets, best_hyp);
-                    if (is_MC_fakes_flips) {//split fakes/flips into 2 datasets for training/testing
-                        if (nt.event() % 2 == 0) {
-                            bdt_MC_baby_training.set_features(BDT_params, weight*2, variationalWeights);
-                        }
-                        else if (nt.event() % 2 == 1) {
-                            bdt_MC_baby_testing.set_features(BDT_params, weight*2, variationalWeights);
-                        }
-                    }
-                    if (is_sig_rares) { //split signal and rares into 3 sections, training, testing, and evaluation of limits
-                        if (nt.event() % 3 == 0) {
-                            bdt_MC_baby_training.set_features(BDT_params, weight*3, variationalWeights);
-                        }
-                        else if (nt.event() % 3 == 1) {
-                            bdt_MC_baby_testing.set_features(BDT_params, weight*3, variationalWeights);
-                        }
-                    }
+                    bdt_MC_baby.set_features(BDT_params, weight, variationalWeights);
+                    //if (is_MC_fakes_flips) {//split fakes/flips into 2 datasets for training/testing
+                    //    if (nt.event() % 2 == 0) {
+                    //        bdt_MC_baby_training.set_features(BDT_params, weight*2, variationalWeights);
+                    //    }
+                    //    else if (nt.event() % 2 == 1) {
+                    //        bdt_MC_baby_testing.set_features(BDT_params, weight*2, variationalWeights);
+                    //    }
+                    //}
+                    //if (is_sig_rares) { //split signal and rares into 3 sections, training, testing, and evaluation of limits
+                    //    if (nt.event() % 3 == 0) {
+                    //        bdt_MC_baby_training.set_features(BDT_params, weight*3, variationalWeights);
+                    //    }
+                    //    else if (nt.event() % 3 == 1) {
+                    //        bdt_MC_baby_testing.set_features(BDT_params, weight*3, variationalWeights);
+                    //    }
+                    //}
                 }
             }
             else if (fill_BDT_data_driven) {
@@ -1337,5 +1339,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     }
     if (make_BDT_MC_babies){
         bdt_MC_baby.close();
+        //bdt_MC_baby_training.close();
+        //bdt_MC_baby_testing.close();
     }
 }
