@@ -46,6 +46,23 @@ vector<string> BDT_features = {
     "LeadBtag_score"
 };
 
+void print_mean_std(vector<float> res) {
+    float sum = 0;
+    float count = 0;
+    for (float r : res) {
+        count++;
+        sum += r;
+    }
+    float mean = sum/count;
+    float var = 0;
+    for(float r : res) {
+        var += pow(r - mean, 2.0);
+        //std::cout << var << std::endl;
+    }
+    var = var / count;
+    std::cout << "avg difference = " << mean << " +/- " << pow(var, 0.5) << std::endl;
+}
+
 void compare_BDT_score(string path_to_xml, string path_to_csv, string test_csv, bool debug=false, int early_stop_round=-1) {
     BDT booster(path_to_xml, path_to_csv);
     ifstream fin;
@@ -83,8 +100,12 @@ void compare_BDT_score(string path_to_xml, string path_to_csv, string test_csv, 
             booster.set_features(param_map);
             float TMVA_score = float(booster.get_score());
             float diff = python_score - TMVA_score;
-            cout << "python: " << python_score << "\tTMVA: " << TMVA_score << "\tdifference: " << diff << endl;
+            results.push_back(abs(diff));
+            if (debug) {
+                cout << "python: " << python_score << "\tTMVA: " << TMVA_score << "\tdifference: " << diff << endl;
+            }
         }
         line.clear();
     }
+    print_mean_std(results);
 }
