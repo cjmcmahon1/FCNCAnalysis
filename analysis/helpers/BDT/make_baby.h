@@ -51,20 +51,23 @@ void BDTBabyMaker::Initialize(char* output_name) {
     BabyTree->Branch("SubSubLeadLep_dz", &(parameter_map["SubSubLeadLep_dz"]));
     BabyTree->Branch("MT_SubSubLeadLep_MET", &(parameter_map["MT_SubSubLeadLep_MET"]));
     BabyTree->Branch("LeadBtag_score", &(parameter_map["LeadBtag_score"]));
+    BabyTree->Branch("LeadJet_CtagScore", &(parameter_map["LeadJet_CtagScore"]));
+    BabyTree->Branch("SubLeadJet_CtagScore", &(parameter_map["SubLeadJet_CtagScore"]));
+    BabyTree->Branch("SubSubLeadJet_CtagScore", &(parameter_map["SubSubLeadJet_CtagScore"]));
     BabyTree->Branch("Weight", &weight);
-    //BabyTree->Branch("Weight_LepSF_up", &variationalWeights["LepSF_up"]);
-    //BabyTree->Branch("Weight_LepSF_down", &variationalWeights["LepSF_down"]);
-    //BabyTree->Branch("Weight_Trigger_up", &variationalWeights["Trigger_up"]);
-    //BabyTree->Branch("Weight_Trigger_down", &variationalWeights["Trigger_down"]);
-    //BabyTree->Branch("Weight_PU_up", &variationalWeights["PU_up"]);
-    //BabyTree->Branch("Weight_PU_down", &variationalWeights["PU_down"]);
-    //BabyTree->Branch("Weight_bTag_up", &variationalWeights["bTag_up"]);
-    //BabyTree->Branch("Weight_bTag_down", &variationalWeights["bTag_down"]);
-    //vector<string> bVariations = {"lf","hf","hfstats1","hfstats2","lfstats1","lfstats2","cferr1","cferr2"};
-    //for (uint b = 0; b < bVariations.size(); b++){
-    //    BabyTree->Branch((bVariations[b]+"_up"), &variationalWeights[bVariations[b]+"_up"]);
-    //    BabyTree->Branch((bVariations[b]+"_down"), &variationalWeights[bVariations[b]+"_down"]);
-    //}
+    BabyTree->Branch("Weight_LepSF_up", &variationalWeights["LepSF_up"]);
+    BabyTree->Branch("Weight_LepSF_down", &variationalWeights["LepSF_down"]);
+    BabyTree->Branch("Weight_Trigger_up", &variationalWeights["Trigger_up"]);
+    BabyTree->Branch("Weight_Trigger_down", &variationalWeights["Trigger_down"]);
+    BabyTree->Branch("Weight_PU_up", &variationalWeights["PU_up"]);
+    BabyTree->Branch("Weight_PU_down", &variationalWeights["PU_down"]);
+    BabyTree->Branch("Weight_bTag_up", &variationalWeights["bTag_up"]);
+    BabyTree->Branch("Weight_bTag_down", &variationalWeights["bTag_down"]);
+    vector<string> bVariations = {"lf","hf","hfstats1","hfstats2","lfstats1","lfstats2","cferr1","cferr2"};
+    for (uint b = 0; b < bVariations.size(); b++){
+        BabyTree->Branch((bVariations[b]+"_up").c_str(), &variationalWeights[(bVariations[b]+"_up").c_str()]);
+        BabyTree->Branch((bVariations[b]+"_down").c_str(), &variationalWeights[(bVariations[b]+"_down").c_str()]);
+    }
 }
 
 BDTBabyMaker::BDTBabyMaker() {

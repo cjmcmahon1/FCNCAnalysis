@@ -458,10 +458,9 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     //BDTBabyMaker bdt_MC_baby_training;
     //BDTBabyMaker bdt_MC_baby_testing;
     BDTBabyMaker bdt_MC_baby;
-    std::string BDT_base_dir = "./helpers/BDT/babies/ctag/";
+    std::string BDT_base_dir = "./helpers/BDT/babies/split_train_eval/";
     if (make_BDT_fakes_babies){
         char* output_baby_name = Form("%s/%s/data_driven/%s_fakes.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
-        //std::experimenal::filesystem::create_directory(output_baby_name);
         bdt_fakes_baby.Initialize(output_baby_name);
         if (debugPrints) {
             cout << output_baby_name << endl;
@@ -469,7 +468,6 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     }
     if (make_BDT_flips_babies){
         char* output_baby_name = Form("%s/%s/data_driven/%s_flips.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
-        //std::experimental::filesystem::create_directory(output_baby_name);
         bdt_flips_baby.Initialize(output_baby_name);
         if (debugPrints) {
             cout << output_baby_name << endl;

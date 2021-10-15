@@ -125,13 +125,13 @@ if __name__ == "__main__":
                 datadirs[2016] + get_sample_path("muon_eg_data", 2016,args.tag) + ".root",
                 ], options=options[2016] + " doData "),
             "signal_tuh": make_obj([
-                #basedirs[2016]+get_sample_path("signal_hut_ST",2016,args.tag)+".root",
-                #basedirs[2016]+get_sample_path("signal_hut_atop",2016,args.tag)+".root",
+                basedirs[2016]+get_sample_path("signal_hut_ST",2016,args.tag)+".root",
+                basedirs[2016]+get_sample_path("signal_hut_atop",2016,args.tag)+".root",
                 basedirs[2016]+get_sample_path("signal_hut_top",2016,args.tag)+".root",
                 ] , options=options[2016]),
             "signal_tch": make_obj([
-                #basedirs[2016]+get_sample_path("signal_hct_ST",2016,args.tag)+".root",
-                #basedirs[2016]+get_sample_path("signal_hct_atop",2016,args.tag)+".root",
+                basedirs[2016]+get_sample_path("signal_hct_ST",2016,args.tag)+".root",
+                basedirs[2016]+get_sample_path("signal_hct_atop",2016,args.tag)+".root",
                 basedirs[2016]+get_sample_path("signal_hct_top",2016,args.tag)+".root",
                 ] , options=options[2016]),
             # "fakes_mc": make_obj(basedirs[2016]+get_sample_path("TTBAR*",2016)+".root", options=options[2016]+ " doFakesMC "),
@@ -358,13 +358,13 @@ if __name__ == "__main__":
                 datadirs[2017] + get_sample_path("muon_eg_data", 2017,args.tag) + ".root",
                 ], options=options[2017] + " doData "),
             "signal_tuh": make_obj([
-                #basedirs[2017]+get_sample_path("signal_hut_ST",2017,args.tag)+".root",
-                #basedirs[2017]+get_sample_path("signal_hut_atop",2017,args.tag)+".root",
+                basedirs[2017]+get_sample_path("signal_hut_ST",2017,args.tag)+".root",
+                basedirs[2017]+get_sample_path("signal_hut_atop",2017,args.tag)+".root",
                 basedirs[2017]+get_sample_path("signal_hut_top",2017,args.tag)+".root",
                 ] , options=options[2017]),
             "signal_tch": make_obj([
-                #basedirs[2017]+get_sample_path("signal_hct_ST",2017,args.tag)+".root",
-                #basedirs[2017]+get_sample_path("signal_hct_atop",2017,args.tag)+".root",
+                basedirs[2017]+get_sample_path("signal_hct_ST",2017,args.tag)+".root",
+                basedirs[2017]+get_sample_path("signal_hct_atop",2017,args.tag)+".root",
                 basedirs[2017]+get_sample_path("signal_hct_top",2017,args.tag)+".root",
                 ] , options=options[2017]),
             "fakes_mc": make_obj([
@@ -595,13 +595,13 @@ if __name__ == "__main__":
                 datadirs[2018] + get_sample_path("muon_eg_data", 2018,args.tag) + ".root",
                 ], options=options[2018] + " doData "),
             "signal_tuh": make_obj([
-                #basedirs[2018]+get_sample_path("signal_hut_ST",2018,args.tag)+".root",
-                #basedirs[2018]+get_sample_path("signal_hut_atop",2018,args.tag)+".root",
+                basedirs[2018]+get_sample_path("signal_hut_ST",2018,args.tag)+".root",
+                basedirs[2018]+get_sample_path("signal_hut_atop",2018,args.tag)+".root",
                 basedirs[2018]+get_sample_path("signal_hut_top",2018,args.tag)+".root",
                 ] , options=options[2018]),
             "signal_tch": make_obj([
-                #basedirs[2018]+get_sample_path("signal_hct_ST",2018,args.tag)+".root",
-                #basedirs[2018]+get_sample_path("signal_hct_atop",2018,args.tag)+".root",
+                basedirs[2018]+get_sample_path("signal_hct_ST",2018,args.tag)+".root",
+                basedirs[2018]+get_sample_path("signal_hct_atop",2018,args.tag)+".root",
                 basedirs[2018]+get_sample_path("signal_hct_top",2018,args.tag)+".root",
                 ] , options=options[2018]),
             # "fakes_mc": make_obj(basedirs[2018]+get_sample_path("TTBAR*",2018,args.tag)+".root", options=options[2018]+ " doFakesMC "),
