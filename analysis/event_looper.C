@@ -1222,30 +1222,21 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
                                 ((category==2) && (chainTitle=="flips_mc")) ||
                                 ((category==3) && (chainTitle=="rares"   )) ||
                                 ((chainTitle=="signal_tch"))                ||
-                                ((chainTitle=="signal_tuh"))                );
+                                ((chainTitle=="signal_tuh"))                ) && (nt.event()%2 == 1); 
+            // we only use odd event numbers to train the BDT
+            bool get_BDT_limits = (((category==1) && (chainTitle=="fakes_mc")) ||
+                                   ((category==2) && (chainTitle=="flips_mc")) ||
+                                   ((category==3) && (chainTitle=="rares"   )) ||
+                                   ((chainTitle=="signal_tch"))                ||
+                                   ((chainTitle=="signal_tuh"))                ) && (nt.event()%2 == 0); 
+            // we use even event numbers to get limits
             bool is_MC_fakes_flips = (chainTitle=="fakes_mc") || (chainTitle=="flips_mc");
             bool is_sig_rares = (chainTitle=="rares"   ) || (chainTitle=="signal_tch") || (chainTitle=="signal_tuh"); 
             bool fill_BDT_data_driven = (abs(crWeight) > 0.0);
             if (fill_BDT_MC) {
                 if (((best_hyp_type == 4) || (((best_hyp.size() > 2) && (best_hyp_type==2)))) && make_BDT_MC_babies) {
                     std::map<std::string, Float_t> BDT_params = hct_booster.calculate_features(good_jets, good_bjets, best_hyp);
-                    bdt_MC_baby.set_features(BDT_params, weight, variationalWeights);
-                    //if (is_MC_fakes_flips) {//split fakes/flips into 2 datasets for training/testing
-                    //    if (nt.event() % 2 == 0) {
-                    //        bdt_MC_baby_training.set_features(BDT_params, weight*2, variationalWeights);
-                    //    }
-                    //    else if (nt.event() % 2 == 1) {
-                    //        bdt_MC_baby_testing.set_features(BDT_params, weight*2, variationalWeights);
-                    //    }
-                    //}
-                    //if (is_sig_rares) { //split signal and rares into 3 sections, training, testing, and evaluation of limits
-                    //    if (nt.event() % 3 == 0) {
-                    //        bdt_MC_baby_training.set_features(BDT_params, weight*3, variationalWeights);
-                    //    }
-                    //    else if (nt.event() % 3 == 1) {
-                    //        bdt_MC_baby_testing.set_features(BDT_params, weight*3, variationalWeights);
-                    //    }
-                    //}
+                    bdt_MC_baby.set_features(BDT_params, weight*2, variationalWeights*2);
                 }
             }
             else if (fill_BDT_data_driven) {
