@@ -1236,7 +1236,7 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
             if (fill_BDT_MC) {
                 if (((best_hyp_type == 4) || (((best_hyp.size() > 2) && (best_hyp_type==2)))) && make_BDT_MC_babies) {
                     std::map<std::string, Float_t> BDT_params = hct_booster.calculate_features(good_jets, good_bjets, best_hyp);
-                    bdt_MC_baby.set_features(BDT_params, weight*2, variationalWeights*2);
+                    bdt_MC_baby.set_features(BDT_params, weight*2, variationalWeights);
                 }
             }
             else if (fill_BDT_data_driven) {
