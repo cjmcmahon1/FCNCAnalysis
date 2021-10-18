@@ -94,7 +94,7 @@ void learn(int nTrain)
     TIter fileIter_bkg(listOfFiles_bkg);
     TFile *currentFile_sig = 0;
     TFile *currentFile_bkg = 0;
-
+    
     vector<TString> vFiles_sig;
     //cout << currentFile_sig->GetTitle() << endl;
     cout << (TFile*)fileIter_sig.Next() << endl;
@@ -184,8 +184,8 @@ void learn(int nTrain)
 
     //factory->PrepareTrainingAndTestTree("lepton_isFromW==1&&lepton_flavor==0", "lepton_isFromW==0&&lepton_flavor==0", prepare_events); // electrons
 
-    dataloader->SetSignalWeightExpression("1");
-    dataloader->SetBackgroundWeightExpression("1");
+    dataloader->SetSignalWeightExpression("weight/2.5");
+    dataloader->SetBackgroundWeightExpression("weight");
     
     TString option = "!H:V:NTrees=2:BoostType=Grad:Shrinkage=0.10:!UseBaggedGrad:nCuts=2:MinNodeSize=0.1%:MaxDepth=1";
     
