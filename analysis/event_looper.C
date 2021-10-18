@@ -23,6 +23,7 @@
 #include "./helpers/histogrammingClass.h"
 //#include "./helpers/flip_weights.h"
 #include "./helpers/BDT/booster.h"
+#include "./helpers/BDT/TMVA_booster.h"
 #include "./helpers/BDT/make_baby.h"
 #include "./helpers/tqdm.h"
 #include "../../NanoTools/NanoCORE/SSSelections.h"
@@ -452,13 +453,16 @@ void event_looper(TObjArray* list, TString title, TString options="", int nevts=
     //BDT constructor
     BDT hct_booster("./helpers/BDT/BDT_HCT.xml", "./helpers/BDT/BDT_HCT_bins.csv");
     BDT hut_booster("./helpers/BDT/BDT_HUT.xml", "./helpers/BDT/BDT_HUT_bins.csv");
+    string test = get_BDT_options(get_params("./helpers/BDT/HCT_params.csv"), true);
+    learn(10);
+    cout << test << endl;
     std::string tmp_yr_str = std::to_string(year);
     BDTBabyMaker bdt_fakes_baby;
     BDTBabyMaker bdt_flips_baby;
     //BDTBabyMaker bdt_MC_baby_training;
     //BDTBabyMaker bdt_MC_baby_testing;
     BDTBabyMaker bdt_MC_baby;
-    std::string BDT_base_dir = "./helpers/BDT/babies/split_train_eval/";
+    std::string BDT_base_dir = "./helpers/BDT/babies/tmp/";
     if (make_BDT_fakes_babies){
         char* output_baby_name = Form("%s/%s/data_driven/%s_fakes.root", BDT_base_dir.c_str(), tmp_yr_str.c_str(), chainTitleCh);
         bdt_fakes_baby.Initialize(output_baby_name);
